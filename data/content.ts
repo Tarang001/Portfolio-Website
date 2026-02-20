@@ -49,7 +49,7 @@ export const PERSON = {
       challenge: "Designing robust guardrails and escalation paths to ensure contextual accuracy while preventing hallucinations and credential over-representation..",
       stack: ["Python", "Gradio", "Google Gemini API"],
       github: "https://github.com/Tarang001/-Agentic-Resume-Assistant",
-      demo: "https://agentic-resume-assistant.vercel.app",
+      // demo: "https://agentic-resume-assistant.vercel.app",
       overview:
         "An agentic AI assistant that uses structured career knowledge, tool-based reasoning, and human-in-the-loop escalation to create a dynamic, personalized representation of my professional profile beyond limitations of traditional resumes or portfolios.",
       architecture:
@@ -60,41 +60,22 @@ export const PERSON = {
         "Add more tools to the agentic assistant to reason about my professional profile and create a dynamic, personalized representation of my professional profile beyond limitations of traditional resumes or portfolios.",
     },
     {
-      slug: "event-pipeline",
-      name: "Real-Time Event Pipeline",
-      problem: "An analytics dashboard was running batch SQL aggregations every 10 minutes, making data stale and dashboards laggy.",
-      solution: "Replaced batch jobs with a Kafka-based event pipeline feeding pre-aggregated materialized views, consumed by a lightweight WebSocket server.",
-      outcome: "Dashboard data latency went from 10 min → under 3 seconds. Batch job infrastructure was decommissioned.",
-      challenge: "Ensuring exactly-once semantics for aggregation updates without distributed transactions.",
-      stack: ["Node.js", "Kafka", "TypeScript", "PostgreSQL", "WebSocket", "Docker Compose"],
-      github: "https://github.com/alexrivera/event-pipeline",
-      demo: "https://pipeline-demo.vercel.app",
-      overview:
-        "A streaming data pipeline that ingests application events from a Kafka topic, aggregates them in-memory using a tumbling window, and flushes to Postgres materialized views. A Node.js WebSocket server pushes diffs to connected dashboards in real time.\n\nBuilt as a learning project to understand the tradeoffs between stream and batch processing first-hand rather than from textbooks.",
-      architecture:
-        "Producer → Kafka topic (3 partitions) → Consumer group (2 workers) → in-process aggregator → Postgres upsert → WebSocket broadcast. Each consumer owns a partition to avoid contention. Aggregation state is held in a Map keyed by window + dimension. On flush, workers upsert into Postgres and send a diff payload to the WS server via an internal HTTP call.",
-      tradeoffs:
-        "Chose at-least-once delivery with idempotent upserts over trying to guarantee exactly-once at the Kafka level. This is simpler operationally and correct as long as the upsert key is stable (event_id + window_start). Downside: if the aggregator crashes mid-window, the window reprocesses from the last committed offset, which may double-count partial windows. Acceptable for analytics; unacceptable for billing.",
-      nextSteps:
-        "Store window state in Redis so it survives consumer restarts without re-reading the entire partition. Also want to add a dead-letter queue for malformed events and a simple schema registry to version event shapes.",
-    },
-    {
       slug: "auth-service",
-      name: "Lightweight Auth Service",
-      problem: "A side-project API was using JWTs stored in localStorage — a classic XSS target — with no refresh token rotation.",
-      solution: "Replaced with an httpOnly cookie-based session system with short-lived access tokens, refresh token rotation, and a token family invalidation strategy.",
-      outcome: "Eliminated the XSS token theft vector. Auth logic is now a standalone service that can be reused across projects.",
-      challenge: "Implementing refresh token rotation without race conditions on concurrent requests.",
-      stack: ["Node.js", "TypeScript", "PostgreSQL", "Redis", "Express"],
+      name: "Interactive Floor Plan Editor",
+      problem: "Existing floor planning tools lack real-time interactivity, flexibility, and simplicity for quick spatial design and experimentation.",
+      solution: "Developed a browser-based editor enabling users to add, move, resize, and label rooms using an intuitive React interface.",
+      outcome: "Delivered a smooth, real-time floor design experience with optimized canvas rendering achieving consistent 60 FPS interactions.",
+      challenge: "Balancing React state management with HTML5 Canvas rendering while maintaining performance during continuous drag and resize actions.",
+      stack: ["Node.js", "TypeScript", "PostgreSQL", "React", "HTML5"],
       github: "https://github.com/alexrivera/auth-service",
       overview:
-        "A self-contained authentication service implementing the cookie+JWT pattern with sliding refresh tokens. The key security property is token family invalidation: if a refresh token is reused (possible sign of theft), the entire token family is invalidated, logging out all sessions.\n\nBuilt because every tutorial I found used either a naive JWT-in-localStorage approach or a heavyweight OAuth library that obscured what was actually happening.",
+        "A secure authentication system implementing cookie-based JWT sessions with sliding refresh tokens and automatic token family invalidation.",
       architecture:
-        "Express API with three routes: /login, /refresh, /logout. Access tokens are 15-minute JWTs in httpOnly cookies. Refresh tokens are opaque 256-bit random strings stored in Postgres with a `family_id` and `used` flag. Redis caches the access token allow-list for fast validation without hitting Postgres on every request.",
+        "Express API with login, refresh, and logout routes using JWT cookies, Postgres-backed refresh tokens, and Redis caching.",
       tradeoffs:
-        "Used opaque refresh tokens instead of JWT refresh tokens so they can be individually invalidated without a blocklist. This requires a DB lookup on every refresh, but refresh happens at most every 15 minutes per user, so the load is negligible. Chose httpOnly cookies over Authorization headers to prevent XSS token theft at the cost of needing CSRF protection.",
+        "Chose opaque refresh tokens and httpOnly cookies for security, accepting minimal database lookups and added CSRF protection complexity.",
       nextSteps:
-        "Add device fingerprinting to flag anomalous refresh requests. Also want to implement PKCE for a potential public-facing OAuth flow and add audit logging for all auth events.",
+        "Plan to add device fingerprinting, PKCE-based OAuth flow, and comprehensive audit logging for enhanced anomaly detection.",
     },
   ];
   
