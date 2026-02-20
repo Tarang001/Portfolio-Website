@@ -67,7 +67,7 @@ export const PERSON = {
       outcome: "Delivered a smooth, real-time floor design experience with optimized canvas rendering achieving consistent 60 FPS interactions.",
       challenge: "Balancing React state management with HTML5 Canvas rendering while maintaining performance during continuous drag and resize actions.",
       stack: ["Node.js", "TypeScript", "PostgreSQL", "React", "HTML5"],
-      github: "https://github.com/alexrivera/auth-service",
+      github: "https://github.com/Tarang001/floor-plan-editor",
       overview:
         "A secure authentication system implementing cookie-based JWT sessions with sliding refresh tokens and automatic token family invalidation.",
       architecture:
